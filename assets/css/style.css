@@ -20,7 +20,7 @@ body {
 body::before {
   content: "";
   position: fixed;
-  background: rgba(4, 4, 4, 0.7) url("../img/photo_2024-06-27_14-39-14.jpg") ;
+  background: url("../img/photo_2024-06-27_14-39-14.jpg") center right no-repeat;
   background-size: cover;
   left: 0;
   right: 0;
