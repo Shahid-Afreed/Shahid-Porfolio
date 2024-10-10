@@ -1,13 +1,9 @@
 <?php
 /**
  * Requires the "PHP Email Form" library
- * The "PHP Email Form" library is available only in the pro version of the template
- * The library should be uploaded to: vendor/php-email-form/php-email-form.php
- * For more info and help: https://bootstrapmade.com/php-email-form/
  */
 
-// Replace contact@example.com with your real receiving email address
-$receiving_email_address = 'shahidafreed643@gmail.com';
+$receiving_email_address = 'contact@example.com'; // Replace with your email
 
 if (file_exists($php_email_form = '../assets/vendor/php-email-form/php-email-form.php')) {
     include($php_email_form);
@@ -22,16 +18,6 @@ $contact->to = $receiving_email_address;
 $contact->from_name = $_POST['name'];
 $contact->from_email = $_POST['email'];
 $contact->subject = $_POST['subject'];
-
-// Uncomment below code if you want to use SMTP to send emails. You need to enter your correct SMTP credentials
-/*
-$contact->smtp = array(
-    'host' => 'example.com',
-    'username' => 'example',
-    'password' => 'pass',
-    'port' => '587'
-);
-*/
 
 $contact->add_message($_POST['name'], 'From');
 $contact->add_message($_POST['email'], 'Email');
@@ -52,18 +38,19 @@ $data = [
 // Send data to Google Sheets
 $options = [
     'http' => [
-        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+        'header'  => "Content-Type: application/x-www-form-urlencoded\r\n",
         'method'  => 'POST',
         'content' => http_build_query($data),
     ],
 ];
+
 $context  = stream_context_create($options);
-$response = file_get_contents($sheet_url, false, $context);
+$response = @file_get_contents($sheet_url, false, $context);
 
 // Check if email was sent successfully
-if ($email_sent) {
-    echo json_encode(['success' => true, 'response' => $response]);
+if ($email_sent && $response !== false) {
+    echo json_encode(['success' => true, 'message' => 'Your message has been sent and recorded.']);
 } else {
-    echo json_encode(['success' => false]);
+    echo json_encode(['success' => false, 'message' => 'Failed to send message or record in Google Sheets.']);
 }
 ?>
